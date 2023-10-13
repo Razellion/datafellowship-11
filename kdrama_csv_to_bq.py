@@ -44,21 +44,21 @@ def run_pipeline_csv_to_bq():
 
     options = PipelineOptions()
     google_cloud_options = options.view_as(GoogleCloudOptions)
-    google_cloud_options.project = 'data-fellowship-400609'  # Replace with your actual project ID
+    google_cloud_options.project = 'YOUR_PROJECT_ID'  # Replace with your actual project ID
     google_cloud_options.job_name = 'kdramajob'  # Replace with your desired job name
-    google_cloud_options.staging_location = 'gs://data-fellowship-400609/training8/stage_files'  # Replace with your GCS staging bucket
-    google_cloud_options.temp_location = 'gs://data-fellowship-400609/training8/temp_files'  # Replace with your GCS Temporary files bucket
+    google_cloud_options.staging_location = 'gs://YOUR_BUCKET/stage_files'  # Replace with your GCS staging bucket
+    google_cloud_options.temp_location = 'gs://YOUR_BUCKET/temp_files'  # Replace with your GCS Temporary files bucket
 
 
     with beam.Pipeline(options=options) as pipeline:
         # Read from the input CSV file
-        lines = pipeline | 'ReadFromCSV' >> ReadFromText('gs://data-fellowship-400609/training8/kdrama.csv', skip_header_lines=1)
+        lines = pipeline | 'ReadFromCSV' >> ReadFromText('gs://YOUR_BUCKET/kdrama.csv', skip_header_lines=1)
         # Parse CSV lines into dictionaries
         parsed_data = (lines
                        | "Transform Data" >> beam.ParDo(RowTransformer(',')))
         _ = (parsed_data
             | 'WriteToBigQuery' >> WriteToBigQuery(
-            table='data-fellowship-400609:dataflow.kdrama_raw',
+            table='YOUR_PROJECT_ID:_YOUR_DATASET.kdrama_raw',
             schema=table_schema,
             create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
             write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
