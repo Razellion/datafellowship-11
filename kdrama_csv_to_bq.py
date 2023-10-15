@@ -58,7 +58,7 @@ def run_pipeline_csv_to_bq():
                        | "Transform Data" >> beam.ParDo(RowTransformer(',')))
         _ = (parsed_data
             | 'WriteToBigQuery' >> WriteToBigQuery(
-            table='YOUR_PROJECT_ID:_YOUR_DATASET.kdrama_raw',
+            table='YOUR_PROJECT_ID:_YOUR_DATASET.kdrama_raw', # Replace with your actual project ID and Dataset Name
             schema=table_schema,
             create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
             write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND

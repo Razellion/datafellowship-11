@@ -32,13 +32,13 @@ def run_pipeline_bq_to_bq():
                                             'COUNTIF(Rating >= 8.5 AND Rating < 9.0) AS Total_Excellent_Drama,'
                                             'COUNTIF(Rating >= 9.0) AS Total_Exceptional_Drama '
                                           'FROM '
-                                            'YOUR_PROJECT_ID:_YOUR_DATASET.kdrama_raw '
+                                            'YOUR_PROJECT_ID.YOUR_DATASET.kdrama_raw '
                                           'GROUP BY Year_of_release '
                                           'ORDER BY Year_of_release'
                                   ,
                                   use_standard_sql=True)
         _ = (data | 'WriteToBigQuery' >> beam.io.WriteToBigQuery(
-                            table='YOUR_PROJECT_ID:_YOUR_DATASET.kdrama_dashboard',
+                            table='YOUR_PROJECT_ID:YOUR_DATASET.kdrama_dashboard', # Replace with your actual project ID and Dataset Name
                             schema=table_schema,
                             create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
                             write_disposition=beam.io.BigQueryDisposition.WRITE_TRUNCATE

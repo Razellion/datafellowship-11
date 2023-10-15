@@ -50,7 +50,7 @@ This step reads data from a CSV file and loads it into BigQuery.
         --project YOUR-PROJECT-ID
 ```
 
-Replace placeholders with your actual project ID
+Replace placeholders with your actual project ID and Dataset Name inside the code
 
 ### Step 2: kdrama_bq_to_bq
 This step performs transformations and copies data within BigQuery.
@@ -61,4 +61,4 @@ This step performs transformations and copies data within BigQuery.
         --project YOUR-PROJECT-ID
 ```
 
-Replace placeholders with your actual project ID
+Replace placeholders with your actual project ID and Dataset Name inside the code
