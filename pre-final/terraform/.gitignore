@@ -1,0 +1,6 @@
+*-sa.json
+
+.terraform/
+.terraform.*
+terraform*
+*.tfvars
