@@ -1,0 +1,14 @@
+w5_assignment:
+  outputs:
+    dev:
+      dataset: w5_assignment
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      keyfile: /opt/airflow/dags/dbts/service_account.json
+      location: US
+      method: service-account
+      priority: interactive
+      project: data-fellowship-400609
+      threads: 3
+      type: bigquery
+  target: dev

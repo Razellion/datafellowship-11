@@ -1,0 +1,83 @@
+version: 2
+
+sources:
+  - name: raw_nyc_taxi_trip
+    description: raw ingested nyc taxi trip data source
+    database: data-fellowship-400609
+    schema: raw
+    tables:
+      - name: nyc_taxi_trip
+        description: raw ingested nyc taxi trip data from kaggle
+        columns:
+          - name: VendorID
+            description: >
+              A code indicating the TPEP provider that provided the record.
+              1= Creative Mobile Technologies, LLC; 2= VeriFone Inc.
+          - name: lpep_pickup_datetime
+            description: Date and time when the meter was engaged.
+          - name: lpep_dropoff_datetime
+            description: Date and time when the meter was disengaged.
+          - name: passenger_count
+            description: Number of passengers in the vehicle. This is a driver-entered value.
+          - name: store_and_fwd_flag
+            description: >
+              This flag indicates whether the trip record was held in vehicle
+              memory before sending to the vendor, aka “store and forward,”
+              because the vehicle did not have a connection to the server.
+              Y= store and forward trip, N= not a store and forward trip
+          - name: RatecodeID
+            description: >
+              The final rate code in effect at the end of the trip.
+              1= Standard rate, 2=JFK, 3=Newark, 4=Nassau or Westchester,
+              5=Negotiated fare, 6=Group ride
+          - name: PULocationID
+            description: TLC Taxi Zone in which the taximeter was engaged.
+          - name: DOLocationID
+            description: TLC Taxi Zone in which the taximeter was disengaged.
+          - name: passenger_count
+            description: Number of passengers in the vehicle. This is a driver-entered value.
+          - name: trip_distance
+            description: Elapsed trip distance in miles reported by the taximeter.
+          - name: fare_amount
+            description: Time-and-distance fare calculated by the meter.
+          - name: extra
+            description: Miscellaneous extras and surcharges. Currently, this only includes the $0.50 and $1 rush hour and overnight charges.
+          - name: mta_tax
+            description: $0.50 MTA tax that is automatically triggered based on the metered rate in use.
+          - name: tip_amount
+            description: Tip amount; This field is automatically populated for credit card tips. Cash tips are not included.
+          - name: tolls_amount
+            description: Total amount of all tolls paid in the trip.
+          - name: improvement_surcharge
+            description: $0.30 improvement surcharge assessed on trips at the flag drop. The improvement surcharge began being levied in 2015.
+          - name: total_amount
+            description: Total amount charged to passengers. Does not include cash tips.
+          - name: payment_type
+            description: >
+              Numeric code signifying how the passenger paid for the trip.
+              1= Credit card, 2= Cash, 3= No charge, 4= Dispute, 5= Unknown, 6= Voided trip
+          - name: congestion_surcharge
+            description: Total amount collected in the trip for NYS congestion surcharge.
+
+  - name: usd_idr_rate
+    description: ingested usd to idr rate data source
+    database: data-fellowship-400609
+    schema: raw
+    tables:
+      - name: usd_idr_rate
+        description: ingested usd to idr rate data from investing.com
+        columns:
+          - name: _Date_
+            description: The date of the data entry.
+          - name: Price
+            description: The price associated with the data entry.
+          - name: Open
+            description: The opening price at the given date.
+          - name: High
+            description: The highest price during the given date.
+          - name: Low
+            description: The lowest price during the given date.
+          - name: Vol_
+            description: The volume associated with the data entry.
+          - name: Change__
+            description: The percentage change associated with the data entry.
