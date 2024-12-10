@@ -1,14 +1,15 @@
 version: "3.3"
 services:
   zookeeper:
-    stdin_open: true
-    tty: true
+    image: confluentinc/cp-zookeeper:7.3.0
+    hostname: zookeeper
     container_name: zookeeper
     ports:
       - 2181:2181
-      - 2888:2888
-      - 3888:3888
-    image: quay.io/debezium/zookeeper:2.4
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    restart: unless-stopped
   broker:
     image: confluentinc/cp-server:7.3.0
     hostname: broker
@@ -34,6 +35,7 @@ services:
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: "true"
       CONFLUENT_SUPPORT_CUSTOMER_ID: anonymous
+    restart: unless-stopped
   schema-registry:
     image: confluentinc/cp-schema-registry:7.3.0
     hostname: schema-registry
@@ -46,10 +48,13 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: broker:29092
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    restart: unless-stopped
   kafka-connect-deb-gcs:
     stdin_open: true
     tty: true
-    build: .
+    build:
+      context: .
+      dockerfile: kafka-connect.Dockerfile
     container_name: kafka-connect
     ports:
       - 8083:8083
@@ -69,30 +74,27 @@ services:
       - CONNECT_INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
       - CONNECT_INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
       - CONNECT_REST_ADVERTISED_HOST_NAME=kafka-connect
-  kafka-connect-ui:
-    image: landoop/kafka-connect-ui:0.9.4
-    hostname: kafka-connect-ui
-    ports:
-      - 8002:8000
-    environment:
-      CONNECT_URL: http://kafka-connect-deb-gcs:8083/
-      PROXY: "true"
-    depends_on:
-      - kafka-connect-deb-gcs
-  control-center:
-    container_name: control-center
-    image: confluentinc/cp-enterprise-control-center:7.3.0
-    ports:
-      - 9021:9021
-    environment:
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: broker:29092
-      CONTROL_CENTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      CONTROL_CENTER_REPLICATION_FACTOR: 1
-      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
-      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
-      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
-      PORT: 9021
+    restart: unless-stopped
+  consumer:
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: py-consumer.Dockerfile
     depends_on:
       - broker
-      - schema-registry
+  kafka-ui:
+    stdin_open: true
+    tty: true
+    ports:
+      - 8080:8080
+    environment:
+      - DYNAMIC_CONFIG_ENABLED=true
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=broker:29092
+      - KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME=kafka-connect-deb-gcs
+      - KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS=http://kafka-connect-deb-gcs:8083
+    image: provectuslabs/kafka-ui
+    depends_on:
+      - broker
+    restart: unless-stopped
 networks: {}
